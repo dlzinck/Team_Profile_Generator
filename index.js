@@ -188,3 +188,90 @@ const internQuestions = [
     name: 'internSchool',
   },
 ];
+
+// Initial function that asks if the user wants to build the team and prints the introduction message
+function intro() {
+  inquirer.prompt(introQuestion).then((appStart) => {
+    if (appStart.introQ === 'Yes, Start Building Team') {
+      log.green('Please Submit Manager Profile Information');
+      managerInfo();
+    } else {
+      log.yellow(`
+        ------------------------------------------------------------
+        ---------------------Application Closed---------------------
+        ------------------------------------------------------------
+            `);
+    }
+  });
+}
+
+// Function to build the team manager
+function managerInfo() {
+  inquirer.prompt(managerQuestions).then((managerBuild) => {
+    let manager = new Manager(
+      managerBuild.managerName,
+      managerBuild.managerId,
+      managerBuild.manageEmail,
+      managerBuild.managerOfficeNumber
+    );
+    teamMembersArray.push(manager);
+    // The teamSizeinfo function is then called to start building the team
+    teamSizeInfo();
+  });
+}
+
+// Function to determine the size of the team with additional engineers or interns
+function teamSizeInfo() {
+  inquirer.prompt(endManagerQuestions).then((teamSize) => {
+    // Choosing yes you add another team member to the array.
+    if (teamSize.teamSize === 'Yes') {
+      teamMemberLoop();
+    }
+    if (teamSize.teamSize === 'No') {
+      // Choosing no you don't add new members, then the application is ended and html is written
+      renderHTML(teamMembersArray);
+    }
+  });
+}
+
+// Function to choose the engineer or intern and prompt questions to build additional class constructors
+function teamMemberLoop() {
+  inquirer.prompt(teamMemberRolePick).then((teamrole) => {
+    if (teamrole.teamMemberRoleType === 'Engineer') {
+      log.blue('Please Submit Engineer Profile Information');
+      inquirer.prompt(engineerQuestions).then((engineerBuild) => {
+        let engineer = new Engineer(
+          engineerBuild.enginnerName,
+          engineerBuild.engineerId,
+          engineerBuild.engineerEmail,
+          engineerBuild.engineerGithub
+        );
+        teamMembersArray.push(engineer);
+        teamSizeInfo();
+      });
+    } else if (teamrole.teamMemberRoleType === 'Intern') {
+      log.magenta('Please Submit Intern Profile Information');
+      inquirer.prompt(internQuestions).then((internBuild) => {
+        let intern = new Intern(
+          internBuild.internName,
+          internBuild.internId,
+          internBuild.internEmail,
+          internBuild.internSchool
+        );
+        teamMembersArray.push(intern);
+        teamSizeInfo();
+      });
+    }
+  });
+}
+
+//Function to write array information to HTML templates when no more team members are added to the application
+async function renderHTML(file) {
+  const htmlProfilePage = render(file);
+  await writeFileAsync(htmlPath, htmlProfilePage).then(function () {
+    log.green(`-------Team Profile Completed-------`);
+  });
+}
+
+// Calls intro function to start application.
+intro();
