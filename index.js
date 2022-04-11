@@ -1,21 +1,21 @@
-const Manager = require('./lib/Manager');
-const Engineer = require('./lib/Engineer');
-const Intern = require('./lib/Intern');
+const Manager = require('./LIB/Manager');
+const Engineer = require('./LIB/Engineer');
+const Intern = require('./LIB/Intern');
 const inquirer = require('inquirer');
 const path = require('path');
 const util = require('util');
 const fs = require('fs');
-const color = require('./color');
+const Color = require('./color');
 const writeFileAsync = util.promisify(fs.writeFile);
 const newHTML = path.resolve(__dirname, 'New_HTML');
 const htmlPath = path.join(newHTML, 'team.html');
-const render = require('./lib/htmlRenderer');
-const log = new color();
+const render = require('./LIB/htmlRender');
+const log = new Color();
 
 // Empty array for the constructor classes
 const teamMembersArray = [];
 
-// Introduction Question to open the applicaiton
+// Introduction question to open the applicaiton
 const introQuestion = {
   type: 'list',
   message:
@@ -106,7 +106,6 @@ const engineerQuestions = [
     name: 'engineerId',
     validate: function (num) {
       numbers = /^[0-9]+$/.test(num);
-
       if (numbers) {
         log.green(`----------ID Number Accepted----------`);
         return true;
@@ -172,7 +171,6 @@ const internQuestions = [
       emailFormat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(
         emailInput
       );
-
       if (emailFormat) {
         log.green(`----------Email Accepted----------`);
         return true;
@@ -265,7 +263,7 @@ function teamMemberLoop() {
   });
 }
 
-//Function to write array information to HTML templates when no more team members are added to the application
+// Function to write array information to HTML templates when no more team members are added to the application
 async function renderHTML(file) {
   const htmlProfilePage = render(file);
   await writeFileAsync(htmlPath, htmlProfilePage).then(function () {

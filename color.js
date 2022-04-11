@@ -1,6 +1,6 @@
-function color() {
+function Color() {
 	if (!this.init) {
-		color.prototype.init = true;
+		Color.prototype.init = true;
 		const colors = {
 			black: '\x1b[30m',
 			red: '\x1b[31m',
@@ -12,10 +12,10 @@ function color() {
 			white: '\x1b[37m',
 		};
 		for (let key in colors) {
-			Logger.prototype[key] = function (...args) {
+			Color.prototype[key] = function (...args) {
 				console.log(colors[key], ...args);
 			};
 		}
 	}
 }
-module.exports = color;
+module.exports = Color;
