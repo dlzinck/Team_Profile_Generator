@@ -98,7 +98,7 @@ const engineerQuestions = [
   {
     type: 'input',
     message: "What is this Engineer's name?",
-    name: 'enginnerName',
+    name: 'engineerName',
   },
   {
     type: 'input',
@@ -190,7 +190,7 @@ const internQuestions = [
 // Initial function that asks if the user wants to build the team and prints the introduction message
 function intro() {
   inquirer.prompt(introQuestion).then((appStart) => {
-    if (appStart.introQ === 'Yes, Start Building Team') {
+    if (appStart.introQ === 'Yes') {
       log.green('Please Submit Manager Profile Information');
       managerInfo();
     } else {
@@ -213,7 +213,8 @@ function managerInfo() {
       managerBuild.managerOfficeNumber
     );
     teamMembersArray.push(manager);
-    // The teamSizeinfo function is then called to start building the team
+    console.log(teamMembersArray);
+    // The teamSizeInfo function is then called to start building the team
     teamSizeInfo();
   });
 }
@@ -221,6 +222,7 @@ function managerInfo() {
 // Function to determine the size of the team with additional engineers or interns
 function teamSizeInfo() {
   inquirer.prompt(endManagerQuestions).then((teamSize) => {
+    console.log(teamSize);
     // Choosing yes you add another team member to the array.
     if (teamSize.teamSize === 'Yes') {
       teamMemberLoop();
@@ -239,7 +241,7 @@ function teamMemberLoop() {
       log.blue('Please Submit Engineer Profile Information');
       inquirer.prompt(engineerQuestions).then((engineerBuild) => {
         let engineer = new Engineer(
-          engineerBuild.enginnerName,
+          engineerBuild.engineerName,
           engineerBuild.engineerId,
           engineerBuild.engineerEmail,
           engineerBuild.engineerGithub
@@ -264,9 +266,9 @@ function teamMemberLoop() {
 }
 
 // Function to write array information to HTML templates when no more team members are added to the application
-async function renderHTML(file) {
-  const htmlProfilePage = render(file);
-  await writeFileAsync(htmlPath, htmlProfilePage).then(function () {
+function renderHTML() {
+  const htmlProfilePage = render(teamMembersArray);
+  writeFileAsync(htmlPath, htmlProfilePage).then(function () {
     log.green(`-------Team Profile Completed-------`);
   });
 }
